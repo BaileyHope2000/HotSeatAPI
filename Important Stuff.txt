@@ -1,0 +1,5 @@
+MySQL Root Username: root
+MySQL Root Password: 5ogID1DOjbQs8Y8U
+MySQL User Account Username: Bailey
+MySQL User Account Password: I know it
+Port Number: 3306

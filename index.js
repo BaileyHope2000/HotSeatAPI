@@ -2,100 +2,308 @@ const express = require('express');
 const app = express();
 const bodyParser = require('body-parser');
 const cors = require('cors');
+const mysql = require('mysql2');
 
-var jsonParser = bodyParser.json()
+var jsonParser = bodyParser.json();
 
 app.use(bodyParser.json());
 app.use(cors());
 
-var seats = [
-    { id: "195c5d65-0888-4370-a6d2-110c7828b33d", date: "02-03-2023", room: "East Stables Room 1", user: {name: "John Doe", job: 'Project Manager', image:'url'}, groupPermission: 'true' },
-    { id: "7d8f8b29-7a4f-4732-88ce-b8726c83296a", date: "02-03-2023", room: "East Stables Room 1", user: {name: "Jane Smith" , job: 'IT Technician', image:'url'}, groupPermission: 'false' },
-    { id: "e491bfef-d4ea-438b-b62b-a12c8246c9c5", date: "02-03-2023", room: "East Stables Room 1", user: {name: "Bob Johnson", job: 'SAP Developer', image:'url'}, groupPermission: 'false' },
-    { id: "fb799bad-6eab-4512-9794-3681cd2f4267", date: "02-03-2023", room: "East Stables Room 1", user: {name: "Emily Brown", job: 'SAP Team Leader', image:'url'}, groupPermission: 'true'  },
-    { id: "e0ffd959-c3c4-45d9-9a3c-7fdfe9c69a63", date: "02-03-2023", room: "East Stables Room 1", user: {name: "Michael Davis", job: 'Software Engineer', image:'url'}, groupPermission: 'false'  },
-    { id: "57c55cf0-a9b4-4d1b-a06b-9d1c0731e551", date: "01-03-2023", room: "East Stables Room 1", user: {name: "John Doe", job: 'Project Manager', image:'url'}, groupPermission: 'true' },
-    { id: "80c9dd08-bf2e-454f-890c-d97a47f06e58", date: "02-03-2023", room: "East Stables Room 2", user: {name: "Jane Doe", job: 'Software Engineer', image:'url'}, groupPermission: 'false' },
-    { id: "6d325ac0-d7d7-435a-9a2e-571e527dd94a", date: "03-03-2023", room: "East Stables Room 1", user: {name: "Bob Smith", job: 'Product Manager', image:'url'}, groupPermission: 'true' },
-    { id: "507433d9-45be-4dd8-b032-ab9bd90e9922", date: "04-03-2023", room: "East Stables Room 2", user: {name: "Emma Johnson", job: 'Data Scientist', image:'url'}, groupPermission: 'false' },
-    { id: "195c5d65-0888-4370-a6d2-110c7828b33d", date: "05-03-2023", room: "East Stables Room 1", user: {name: "Michael Davis", job: 'UX Designer', image:'url'}, groupPermission: 'true' },
-    { id: "83f75af3-df6b-43a2-9187-982954ea6c79", date: "06-03-2023", room: "East Stables Room 2", user: {name: "Sophia Lee", job: 'Front-end Developer', image:'url'}, groupPermission: 'false' },
-    { id: "df6e2aec-0b82-4400-ab79-fe5040a5dfcd", date: "07-03-2023", room: "East Stables Room 1", user: {name: "John Doe", job: 'Project Manager', image:'url'}, groupPermission: 'true' },
-    { id: "80c9dd08-bf2e-454f-890c-d97a47f06e58", date: "08-03-2023", room: "East Stables Room 2", user: {name: "Jane Doe", job: 'Software Engineer', image:'url'}, groupPermission: 'false' },
-    { id: "7d8f8b29-7a4f-4732-88ce-b8726c83296a", date: "09-03-2023", room: "East Stables Room 1", user: {name: "Bob Smith", job: 'Product Manager', image:'url'}, groupPermission: 'true' },
-    { id: "7e639faf-5e6d-4ce1-b99f-5a2dffb687ea", date: "10-03-2023", room: "East Stables Room 2", user: {name: "Emma Johnson", job: 'Data Scientist', image:'url'}, groupPermission: 'false' }
-  ];
-
-app.post('/seats',jsonParser, (req, res) => {
-  //add a check to make sure the seat isn't already taken
-    const { id, date, room, user } = req.body;
-    seats = seats.filter(
-        (seat) => !(seat.date === date && seat.user.name === user.name)
-      );
-    seats.push({ id, date, room, user, groupPermission: 'false' });
-    res.set('Access-Control-Allow-Origin', '*');
-    res.json({ message: 'Seat added successfully', seats });
-    console.log({ id, date, room, user, groupPermission: 'false' })
+const connection = mysql.createConnection({
+	host: 'localhost',
+	user: 'root',
+	password: '5ogID1DOjbQs8Y8U',
+	database: 'hotdeskdb',
+	port: 3306
 });
 
-app.get("/seats/all", (req, res) => {
-  res.status(200).json(seats);
+connection.connect((error) => {
+	if (error) {
+		console.error(error);
+	} else {
+		console.log('Connected to the database');
+	}
+});
+
+
+//Book User
+app.post('/bookseat', jsonParser, (req, res) => {
+	const { seat_id, booking_date, room_name, user_id } = req.body;
+	const parsedDate = new Date(booking_date);
+
+	connection.query(
+		'SELECT * FROM bookings WHERE seat_id = ? AND booking_date = ?',
+		[seat_id, parsedDate],
+		(error, results) => {
+			if (error) {
+				console.error(error);
+				res.status(500).json({ message: 'Error checking seat availability' });
+			} else if (results.length > 0) {
+				res.json({ message: 'Seat already taken' });
+			} else {
+				connection.query(
+					'DELETE FROM bookings WHERE booking_date = ? AND user_id = ?',
+					[parsedDate, user_id],
+					(error) => {
+						if (error) {
+							console.error(error);
+							res.status(500).json({ message: 'Internal server error' });
+						} else {
+							if (seat_id) {
+								createBooking(res, parsedDate, seat_id, room_name, user_id, null);
+							} else {
+								res.json({ message: 'Booking removed successfully' });
+							}
+						}
+					}
+				);
+			}
+		}
+	);
+});
+
+
+//Book Guest
+app.post('/bookguest', jsonParser, async (req, res) => {
+	const { name, email, host_id, booking_date, seat_id, room_name } = req.body;
+	const parsedDate = new Date(booking_date);
+	try {
+		const emailRegex = /^[\w-]+(\.[\w-]+)*@([\w-]+\.)+[a-zA-Z]{2,7}$/;
+		if (!emailRegex.test(email)) {
+			return res.status(400).json({ message: 'Invalid email format.' });
+		}
+		connection.query(
+			'SELECT * FROM guests WHERE email = ?',
+			[email],
+			(error, results) => {
+				if (error) {
+					console.error(error);
+					res.status(500).json({ message: 'Error checking for existing guest' });
+				} else if (results.length > 0) {
+					// Guest already exists, use the existing guest_id
+					const guest_id = results[0].guest_id;
+					createBooking(res, parsedDate, seat_id, room_name, host_id, guest_id);
+				} else {
+					// Add a new guest to the guests table
+					connection.query(
+						'INSERT INTO guests (name, email, host_id) VALUES (?, ?, ?)',
+						[name, email, host_id],
+						(error, results) => {
+							if (error) {
+								console.error(error);
+								res.status(500).json({ message: 'Error adding guest' });
+							} else {
+								// Get the guest_id of the newly added guest
+								const guest_id = results.insertId;
+								createBooking(res, parsedDate, seat_id, room_name, host_id, guest_id);
+							}
+						}
+					);
+				}
+			}
+		);
+	} catch (error) {
+		console.error(error);
+		res.status(500).json({ message: 'Internal server error' });
+	}
+});
+
+function createBooking(res, booking_date, seat_id, room_name, user_id, guest_id) {
+	connection.query(
+		'INSERT INTO bookings (booking_date, seat_id, room_name, user_id, guest_id) VALUES (?, ?, ?, ?, ?)',
+		[booking_date, seat_id, room_name, user_id, guest_id],
+		(error, results) => {
+			if (error) {
+				console.error(error);
+				res.status(500).json({ message: 'Error creating booking' });
+			} else {
+				res.status(201).json({ message: 'Booking created successfully' });
+			}
+		}
+	);
+}
+
+
+app.get('/seats/all', (req, res) => {
+	connection.query('SELECT bookings.*, users.* FROM bookings INNER JOIN users ON bookings.user_id = users.user_id', (error, results) => {
+		var jsonData = JSON.parse(JSON.stringify(results));
+		if (error) {
+			console.error(error);
+			res.status(500).json({ message: 'Error fetching seats' });
+		} else {
+			res.status(200).json(jsonData);
+		}
+	});
 });
 
 app.get('/seats/:date', (req, res) => {
-    const date = req.params.date;
-    const seatsForDate = seats.filter(seat => seat.date === date);
-    if (!seatsForDate.length) {
-        res.json({ message: 'No seats found for the provided date' });
-    }
-    else {
-        res.json({ seatIds: seatsForDate });
-    }
+	const booking_date = req.params.date;
+	connection.query(
+		`SELECT bookings.*, users.name as user_name, users.email as user_email, users.job as user_job, guests.name as guest_name, guests.email as guest_email
+        FROM bookings
+        LEFT JOIN users ON bookings.user_id = users.user_id
+        LEFT JOIN guests ON bookings.guest_id = guests.guest_id
+        WHERE booking_date = ?`,
+		[booking_date],
+		(error, results) => {
+			var jsonData = JSON.parse(JSON.stringify(results));
+			if (error) {
+				console.error(error);
+				res.status(500).json({ message: 'Error fetching seats' });
+			} else if (!results.length) {
+				res.json({ message: 'No seats found for the provided date' });
+			} else {
+				res.json({ seatIds: jsonData });
+			}
+		}
+	);
 });
 
-app.get("/api/seats/:name", (req, res) => {
-    const name = req.params.name;
-    const seat = seats.filter(s => s.user.name === name);
-  
-    if (seat) {
-      res.status(200).send(seat);
-    } else {
-      res.status(404).json({ error: `No working days found for user with name "${name}"` });
-    }
-  });
 
-app.delete("/seats/:id/:date", (req, res) => {
-    const { id, date } = req.params;
-  
-    seats = seats.filter((seat) => !(seat.id === id && seat.date === date));
-  
-    res.json({ message: "Seat successfully removed." });
-  });
+app.get('/api/seats/:user_id', (req, res) => {
+	const user_id = req.params.user_id;
+	connection.query(
+		'SELECT * FROM bookings WHERE user_id = ?',
+		[user_id],
+		(error, results) => {
+			var jsonData = JSON.parse(JSON.stringify(results));
+			if (error) {
+				console.error(error);
+				res.status(500).json({ message: 'Internal server error' });
+			} else if (!results.length) {
+				res.status(404).json({ message: `No seats found for user with id ${user_id}` });
+			} else {
+				res.json(jsonData);
+			}
+		}
+	);
+});
 
-let groups = [
-    {
-      name: "Group1",
-      members: ["User1", "User2", "User3"]
-    },
-    {
-      name: "Group2",
-      members: ["User4", "User5"]
-    },
-    {
-      name: "Group3",
-      members: ["User6", "User7", "User8", "User9"]
-    }
-  ];
-  
-  app.get("/group/:name", (req, res) => {
-    const name = req.params.name;
-    const group = groups.find(group => group.name === name);
-    if (!group) {
-      return res.status(404).json({ message: "Group not found" });
-    }
-    return res.json(group);
-  });
+app.get("/group/:groupNumber", (req, res) => {
+	const groupNumber = req.params.groupNumber;
+	console.log(groupNumber)
+	connection.query(
+		'SELECT * FROM users WHERE group_id = ?',
+		[groupNumber],
+		(error, results) => {
+			var jsonData = JSON.parse(JSON.stringify(results));
+			if (error) {
+				console.error(error);
+				res.status(500).json({ message: 'Internal server error' });
+			} else if (!results.length) {
+				res.status(404).json({ message: `No members found for group with id ${groupNumber}` });
+			} else {
+				res.json(jsonData);
+			}
+		}
+	);
+});
+
+app.get('/getguestbookings/:user_id', (req, res) => {
+	const user_id = req.params.user_id;
+	connection.query(
+		`SELECT bookings.*, guests.* 
+		FROM bookings 
+		INNER JOIN guests ON bookings.guest_id = guests.guest_id 
+		WHERE bookings.user_id = ? AND bookings.guest_id IS NOT NULL`,
+		[user_id],
+		(error, results) => {
+			console
+			if (error) {
+				console.error(error);
+				res.status(500).json({ message: 'Error fetching bookings with guests' });
+			} else if (results.length === 0) {
+				res.json({ message: 'No bookings with guests found for the provided host_id' });
+			} else {
+				res.json({ visitors: results });
+			}
+		}
+	);
+});
+
+app.delete('/removeguestbooking/:guest_id', (req, res) => {
+	const guest_id = req.params.guest_id;
+
+	// Step 1: Delete the booking(s) for the guest
+	connection.query(
+		'DELETE FROM bookings WHERE guest_id = ?',
+		[guest_id],
+		(error) => {
+			if (error) {
+				console.error(error);
+				res.status(500).json({ message: 'Error deleting bookings for the guest' });
+			} else {
+				// Step 2: Check if there are any linked bookings left for the guest
+				connection.query(
+					'SELECT * FROM bookings WHERE guest_id = ?',
+					[guest_id],
+					(error, results) => {
+						if (error) {
+							console.error(error);
+							res.status(500).json({ message: 'Error checking for remaining guest bookings' });
+						} else if (results.length === 0) {
+							// If no linked bookings left, remove the guest entry from the guests table
+							connection.query(
+								'DELETE FROM guests WHERE guest_id = ?',
+								[guest_id],
+								(error) => {
+									if (error) {
+										console.error(error);
+										res.status(500).json({ message: 'Error deleting guest' });
+									} else {
+										res.json({ message: 'Guest and their bookings removed successfully' });
+									}
+								}
+							);
+						} else {
+							res.json({ message: 'Bookings removed, but the guest still has linked bookings' });
+						}
+					}
+				);
+			}
+		}
+	);
+});
+
+app.post('/login', (req, res) => {
+	const { email, password } = req.body;
+	console.log(email, password)
+	connection.query(
+		'SELECT * FROM login WHERE email = ? AND password = ?',
+		[email, password],
+		(error, results) => {
+			console.log(results)
+			if (error) {
+				console.error(error);
+				res.status(500).json({ message: 'Error logging in' });
+			} else if (!results.length) {
+				res.json({ message: 'Incorrect username or password' });
+			} else {
+
+				connection.query(
+					'SELECT * FROM users WHERE email = ?',
+					[email],
+					(error, results) => {
+						const user = results[0];
+						res.json({
+							message: true,
+							user_id: user.user_id,
+							email: user.email,
+							name: user.name,
+							job: user.job,
+							image_url: user.image_url,
+							group_leader: user.group_leader,
+							group_id: user.group_id,
+							admin: user.admin
+						});
+					}
+				)
+			}
+		}
+	);
+});
+
 
 app.listen(8080, () => {
-    console.log('Server started on port 8080');
+	console.log('Server started on port 8080');
 });
