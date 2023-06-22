@@ -1,0 +1,43 @@
+POST https://azne-p-cag-prod-appservicewindows.azurewebsites.net/api/login HTTP/1.1
+content-type: application/json
+
+{
+    "email": "example@email.com",
+    "password": "Password1"
+}
+###Check health
+GET https://azne-p-cag-prod-appservicewindows.azurewebsites.net/api/health
+### Get all seats (not really needed)
+GET https://azne-p-cag-prod-appservicewindows.azurewebsites.net/api/seats/all
+### Book Seat
+POST https://azne-p-cag-prod-appservicewindows.azurewebsites.net/api/bookseat HTTP/1.1
+content-type: application/json
+
+{
+    "seat_id": "something",
+    "booking_date": "2025-12-30",
+    "room_name": "East Stables North",
+    "user_id": "1" 
+}
+### Book Guest Broken
+POST https://azne-p-cag-prod-appservicewindows.azurewebsites.net/api/bookguest HTTP/1.1
+content-type: application/json
+
+{
+    "name":"Jean Guest",
+    "email":"guest@email.com",
+    "host_id":"1", 
+    "booking_date":"2025-12-30", 
+    "seat_id":"something else", 
+    "room_name":"East Stables South" 
+}
+### Get by User ID
+GET https://azne-p-cag-prod-appservicewindows.azurewebsites.net/api/api/seats/1
+### Get by Date also broken
+GET https://azne-p-cag-prod-appservicewindows.azurewebsites.net/api/seats/2023-07-30
+###
+GET https://azne-p-cag-prod-appservicewindows.azurewebsites.net/api/group/1
+### Remove Guests
+DELETE  https://azne-p-cag-prod-appservicewindows.azurewebsites.net/api/removeguestbooking/1
+### Get Guest bookings
+GET https://azne-p-cag-prod-appservicewindows.azurewebsites.net/api/getguestbookings/1
