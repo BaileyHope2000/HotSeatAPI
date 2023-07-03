@@ -19,7 +19,7 @@ content-type: application/json
     "room_name": "East Stables North",
     "user_id": "1" 
 }
-### Book Guest Broken
+### Book Guest
 POST https://azne-p-cag-prod-appservicewindows.azurewebsites.net/api/bookguest HTTP/1.1
 content-type: application/json
 
@@ -33,7 +33,7 @@ content-type: application/json
 }
 ### Get by User ID
 GET https://azne-p-cag-prod-appservicewindows.azurewebsites.net/api/api/seats/1
-### Get by Date also broken
+### Get by Date
 GET https://azne-p-cag-prod-appservicewindows.azurewebsites.net/api/seats/2023-07-30
 ###
 GET https://azne-p-cag-prod-appservicewindows.azurewebsites.net/api/group/1
