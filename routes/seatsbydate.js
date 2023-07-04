@@ -5,7 +5,7 @@ var jsonParser = bodyParser.json();
 const connection = require('../db');
 
 router.get('/api/seats/:date', (req, res) => {
-	const booking_date = new date(req.params.date);
+	const booking_date = new Date(req.params.date);
 	connection.query(
 		`SELECT bookings.*, users.name as user_name, users.email as user_email, users.job as user_job, guests.name as guest_name, guests.email as guest_email
         FROM bookings
