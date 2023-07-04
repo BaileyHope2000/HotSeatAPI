@@ -8,13 +8,14 @@ router.post('/api/bookseat', jsonParser, (req, res) => {
 
     const { seat_id, booking_date, room_name, user_id } = req.body;
     const parsedDate = new Date(booking_date);
+    parsedDate.setDate(parsedDate.getDate() + 1);
     connection.query(
         'SELECT * FROM bookings WHERE seat_id = ? AND booking_date = ?',
         [seat_id, parsedDate],
         (error, results) => {
             if (error) {
                 console.error(error);
-                res.status(500).json({ message: 'Error checking seat availability' });
+                res.status(500).json({ message: 'Error seat already booked for this' });
             } else if (results.length > 0) {
                 res.json({ message: 'Seat already taken' });
             } else {
