@@ -7,6 +7,7 @@ const connection = require('../db');
 router.post('/api/bookguest', jsonParser, async (req, res) => {
     const { name, email, host_id, booking_date, seat_id, room_name } = req.body;
     const parsedDate = new Date(booking_date);
+    parsedDate.setDate(parsedDate.getDate() + 1);
     try {
         const emailRegex = /^[\w-]+(\.[\w-]+)*@([\w-]+\.)+[a-zA-Z]{2,7}$/;
         if (!emailRegex.test(email)) {

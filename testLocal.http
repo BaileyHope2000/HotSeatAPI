@@ -1,0 +1,43 @@
+POST http://localhost:8080/api/login HTTP/1.1
+content-type: application/json
+
+{
+    "email": "example@email.com",
+    "password": "Password1"
+}
+###Check health
+GET http://localhost:8080/api/health
+### Get all seats (not really needed)
+GET http://localhost:8080/api/seats/all
+### Book Seat
+POST http://localhost:8080/api/bookseat HTTP/1.1
+content-type: application/json
+
+{
+    "seat_id": "something",
+    "booking_date": "2025-12-30",
+    "room_name": "East Stables North",
+    "user_id": "1" 
+}
+### Book Guest
+POST http://localhost:8080/api/bookguest HTTP/1.1
+content-type: application/json
+
+{
+    "name":"Jean Guest",
+    "email":"guest@email.com",
+    "host_id":"1", 
+    "booking_date":"2025-12-30", 
+    "seat_id":"something else", 
+    "room_name":"East Stables South" 
+}
+### Get by User ID
+GET http://localhost:8080/api/api/seats/1
+### Get by Date
+GET http://localhost:8080/api/seats/2023-07-31
+###
+GET http://localhost:8080/api/group/1
+### Remove Guests
+DELETE http://localhost:8080/api/removeguestbooking/1
+### Get Guest bookings
+GET http://localhost:8080/api/getguestbookings/1

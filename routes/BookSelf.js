@@ -5,14 +5,14 @@ var jsonParser = bodyParser.json();
 const connection = require('../db');
 
 router.post('/api/bookseat', jsonParser, (req, res) => {
-
     const { seat_id, booking_date, room_name, user_id } = req.body;
-    const parsedDate = new Date(booking_date);
-    parsedDate.setDate(parsedDate.getDate() + 1);
+    console.log(booking_date)
+    console.log(user_id)
     connection.query(
         'SELECT * FROM bookings WHERE seat_id = ? AND booking_date = ?',
-        [seat_id, parsedDate],
+        [seat_id, booking_date],
         (error, results) => {
+            console.log('working')
             if (error) {
                 console.error(error);
                 res.status(500).json({ message: 'Error seat already booked for this' });
@@ -21,16 +21,16 @@ router.post('/api/bookseat', jsonParser, (req, res) => {
             } else {
                 connection.query(
                     'DELETE FROM bookings WHERE booking_date = ? AND user_id = ?',
-                    [parsedDate, user_id],
+                    [booking_date, user_id],
                     (error) => {
                         if (error) {
                             console.error(error);
                             res.status(500).json({ message: 'Didnt delete' });
                         } else {
                             if (seat_id) {
-                                createBooking(res, parsedDate, seat_id, room_name, user_id, null);
+                                createBooking(res, booking_date, seat_id, room_name, user_id, null);
                             } else {
-                                res.json({ message: 'Booking removed successfully' });
+                                res.status(200).json({ message: 'Booking removed successfully' });
                             }
                         }
                     }

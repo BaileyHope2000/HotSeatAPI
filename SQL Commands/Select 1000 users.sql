@@ -1,0 +1,1 @@
+SELECT * FROM `hotdeskdb`.`users` LIMIT 1000;

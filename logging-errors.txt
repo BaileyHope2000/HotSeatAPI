@@ -1,0 +1,61 @@
+Fri Jun 23 2023 07:43:52 GMT+0000 (Coordinated Universal Time): Disabling Azure Drive logging after 43200000ms since it was enabled
+Wed Jul 05 2023 08:31:34 GMT+0000 (Coordinated Universal Time): Application has thrown an uncaught exception and is terminated:
+Error: Cannot find module './routes/GetGuestBookingsByID'
+Require stack:
+- C:\home\site\wwwroot\API\index.js
+- C:\Program Files (x86)\iisnode\interceptor.js
+    at Module._resolveFilename (node:internal/modules/cjs/loader:995:15)
+    at Module._load (node:internal/modules/cjs/loader:841:27)
+    at Module.require (node:internal/modules/cjs/loader:1061:19)
+    at require (node:internal/modules/cjs/helpers:103:18)
+    at Object.<anonymous> (C:\home\site\wwwroot\API\index.js:18:23)
+    at Module._compile (node:internal/modules/cjs/loader:1159:14)
+    at Module._extensions..js (node:internal/modules/cjs/loader:1213:10)
+    at Module.load (node:internal/modules/cjs/loader:1037:32)
+    at Module._load (node:internal/modules/cjs/loader:878:12)
+    at Module.require (node:internal/modules/cjs/loader:1061:19)
+Wed Jul 05 2023 08:31:43 GMT+0000 (Coordinated Universal Time): Application has thrown an uncaught exception and is terminated:
+Error: Cannot find module './routes/GetGuestBookingsByID'
+Require stack:
+- C:\home\site\wwwroot\API\index.js
+- C:\Program Files (x86)\iisnode\interceptor.js
+    at Module._resolveFilename (node:internal/modules/cjs/loader:995:15)
+    at Module._load (node:internal/modules/cjs/loader:841:27)
+    at Module.require (node:internal/modules/cjs/loader:1061:19)
+    at require (node:internal/modules/cjs/helpers:103:18)
+    at Object.<anonymous> (C:\home\site\wwwroot\API\index.js:18:23)
+    at Module._compile (node:internal/modules/cjs/loader:1159:14)
+    at Module._extensions..js (node:internal/modules/cjs/loader:1213:10)
+    at Module.load (node:internal/modules/cjs/loader:1037:32)
+    at Module._load (node:internal/modules/cjs/loader:878:12)
+    at Module.require (node:internal/modules/cjs/loader:1061:19)
+Wed Jul 05 2023 08:36:29 GMT+0000 (Coordinated Universal Time): Application has thrown an uncaught exception and is terminated:
+Error: Cannot find module './routes/GetGuestByID'
+Require stack:
+- C:\home\site\wwwroot\API\index.js
+- C:\Program Files (x86)\iisnode\interceptor.js
+    at Module._resolveFilename (node:internal/modules/cjs/loader:995:15)
+    at Module._load (node:internal/modules/cjs/loader:841:27)
+    at Module.require (node:internal/modules/cjs/loader:1061:19)
+    at require (node:internal/modules/cjs/helpers:103:18)
+    at Object.<anonymous> (C:\home\site\wwwroot\API\index.js:18:23)
+    at Module._compile (node:internal/modules/cjs/loader:1159:14)
+    at Module._extensions..js (node:internal/modules/cjs/loader:1213:10)
+    at Module.load (node:internal/modules/cjs/loader:1037:32)
+    at Module._load (node:internal/modules/cjs/loader:878:12)
+    at Module.require (node:internal/modules/cjs/loader:1061:19)
+Wed Jul 05 2023 08:36:51 GMT+0000 (Coordinated Universal Time): Application has thrown an uncaught exception and is terminated:
+Error: Cannot find module './routes/GetGuestByID'
+Require stack:
+- C:\home\site\wwwroot\API\index.js
+- C:\Program Files (x86)\iisnode\interceptor.js
+    at Module._resolveFilename (node:internal/modules/cjs/loader:995:15)
+    at Module._load (node:internal/modules/cjs/loader:841:27)
+    at Module.require (node:internal/modules/cjs/loader:1061:19)
+    at require (node:internal/modules/cjs/helpers:103:18)
+    at Object.<anonymous> (C:\home\site\wwwroot\API\index.js:18:23)
+    at Module._compile (node:internal/modules/cjs/loader:1159:14)
+    at Module._extensions..js (node:internal/modules/cjs/loader:1213:10)
+    at Module.load (node:internal/modules/cjs/loader:1037:32)
+    at Module._load (node:internal/modules/cjs/loader:878:12)
+    at Module.require (node:internal/modules/cjs/loader:1061:19)

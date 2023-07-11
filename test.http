@@ -41,3 +41,12 @@ GET https://azne-p-cag-prod-appservicewindows.azurewebsites.net/api/group/1
 DELETE  https://azne-p-cag-prod-appservicewindows.azurewebsites.net/api/removeguestbooking/1
 ### Get Guest bookings
 GET https://azne-p-cag-prod-appservicewindows.azurewebsites.net/api/getguestbookings/1
+### Get details from email
+GET https://azne-p-cag-prod-appservicewindows.azurewebsites.net/api/getdetails/bailey.hope@croda.com
+### Create Account from Email
+POST https://azne-p-cag-prod-appservicewindows.azurewebsites.net/api/createuser
+content-type: application/json
+
+{
+    "email":"jargon.largon@croda.com"
+}
